@@ -1,0 +1,31 @@
+---
+title: How to merge only a specific commit to a branch
+description: We have some situation where among all the commits we have from our source branch, we would like to merge only on of it to a target branch.
+tags: ["git"]
+date: 2024-08-04
+published: true
+---
+
+Let's say we are currently working on this repository with someone else, we both committed our changes to the master branch. While to publish our changes to specific environment, we need to merge the changes to that specific environment branch.
+
+However, only our changes was ready to be tested while other's changes is still in progress. This leads to a situation where we **only needed the specific commit coming from our changes** to be merged from master branch to the environment branch.
+
+To make this work, we first create a working branch branched out from the environment branch. 
+Then in our local, we get our terminal ready, and use the following commands:
+
+1. Checkout on our working branch that branched out from the environment branch.
+```bash
+git checkout working-branch
+```
+
+2. Retrieve the specific git commit SHA of our target changes, and cherry-pick it.
+```bash
+git cherry-pick bfgf29y239
+```
+
+3. Push the cherry-pick commit to our working branch.
+```bash
+git push origin working-branch
+```
+
+And done! Now that we have only that commit in our working branch, we can proceed to raise pull request to merge our working branch to the environment branch.

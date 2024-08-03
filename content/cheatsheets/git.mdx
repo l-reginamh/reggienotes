@@ -1,0 +1,29 @@
+---
+title: Git Commands
+description: The list of Git commands.
+date: 2024-08-04
+published: true
+---
+
+cherry-pick
+```bash
+git checkout working-branch
+git cherry-pick bfgf29y239
+git push origin working-branch
+```
+
+--amend
+```bash
+git status
+git add modified-file.txt
+git commit --amend -m "write the new commit message here."
+git push origin branch-name -f
+```
+
+--amend --no-edit
+```bash
+git status
+git add modified-file.txt
+git commit --amend --no-edit
+git push origin branch-name -f
+```

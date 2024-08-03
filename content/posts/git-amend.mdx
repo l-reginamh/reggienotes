@@ -1,0 +1,34 @@
+---
+title: How to make changes on our previous commit
+description: We might not only pushing for one commit in a single task, but that would make our git looks messy and hard to track later. What can we do?
+tags: ["git"]
+date: 2024-08-04
+published: true
+---
+
+When we are working on task, not every time only one commit would be pushed. Human make mistakes, so in the situation where we have pushed our commit, but we realized something was missing and we don't want to push another commit, what we can do here is we **amend the commit**.
+
+Firstly, we use the git status command to check on the files that has been modified.
+```bash
+git status
+```
+
+Then, we use git add command to add the modified file to git.
+```bash
+git add modified-file.txt
+```
+
+To amend the commit without changing the commit message, we need to use —no-edit flag.
+```bash
+git commit --amend --no-edit
+```
+
+While to amend the commit and changing the commit message, we use the -m flag.
+```bash
+git commit --amend -m "write the new commit message here."
+```
+
+And last, we'll need to git push the changes.
+```bash
+git push origin branch-name -f
+```
