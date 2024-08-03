@@ -3,13 +3,11 @@
 import { siteConfig } from "@/config/site";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
-import { Button, buttonVariants } from "../ui/button";
+import { Button } from "../ui/button";
 import { Menu } from "lucide-react";
 import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/navigation";
 import { SideNav } from "./sideNav";
-import { cn } from "@/lib/utils";
-import { Icons } from "../icons";
 
 export function MobileNav() {
     const [open, setOpen] = useState(false);

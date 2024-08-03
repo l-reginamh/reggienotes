@@ -9,7 +9,6 @@ import { Icons } from "../icons";
 import { ThemeToggle } from "./themeToggle";
 
 export function SideNav() {
-    const pathname = usePathname()
     return (
         <>
             <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">

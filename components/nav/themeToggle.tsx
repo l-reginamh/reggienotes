@@ -1,6 +1,5 @@
 "use client"
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { useTheme } from "next-themes"
 import { Button } from "../ui/button";
 import { Moon, Sun } from "lucide-react";

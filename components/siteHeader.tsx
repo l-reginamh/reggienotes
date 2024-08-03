@@ -5,11 +5,10 @@ import { SideNav } from "./nav/sideNav";
 import { MobileNav } from "./nav/mobileNav";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
-import CommandBar from "./commandBar";
 import { posts, cheatsheets } from "../.velite"
 import { KBarProvider, Priority, useKBar } from "kbar";
 import { siteConfig } from "@/config/site";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { SearchBar } from "./nav/searchBar";
 import CommandPortal from "./commandPortal";
 

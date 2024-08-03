@@ -3,7 +3,6 @@ import {
     KBarAnimator,
     KBarPortal,
     KBarPositioner,
-    KBarProvider,
     KBarResults,
     KBarSearch,
     useMatches,
