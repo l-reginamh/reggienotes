@@ -9,59 +9,32 @@ export default function Home() {
   const latestPosts = sortPosts(posts).slice(0, 5);
   return (
     <>
-      <section className="space-y-6 pb-8 pt-6 md:pb-12 md:mt-10 lg:py-32">
-        <div className="container flex flex-col gap-4 text-center">
+      <section className="space-y-6 pb-8 pt-6 mx-1 sm:mt-10 md:pb-12 lg:py-32">
+        <div className="container flex flex-col items-center justify-center gap-4 text-center">
           <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-balance">
-            Hello, I&apos;m James
+            Hihi, I&apos;m Regina
           </h1>
           <p className="max-w-[42rem] mx-auto text-muted-foreground sm:text-xl text-balance">
-            Welcome to my blog template. Built using tailwind, shadcn, velite
-            and Nextjs 14.
+            Congratulation!🥳 You have found the hidden space of notes and cheatsheets written by Regina!
           </p>
-          <div className="flex flex-col gap-4 justify-center sm:flex-row">
+          <p className="max-w-[42rem] mx-auto text-muted-foreground sm:text-xl text-balance">
+            Let's get started!🤪
+          </p>
+          <div className="w-full flex flex-col gap-4 justify-center mt-5 sm:flex-row">
             <Link
               href="/posts"
-              className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-fit")}
+              className={cn(buttonVariants({ variant: "secondary", size: "xl" }), "w-full sm:w-fit")}
             >
-              View my blog
+              Checkout Posts!
             </Link>
             <Link
-              href={siteConfig.links.github}
-              target="_blank"
-              rel="noreferrer"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "lg" }),
-                "w-full sm:w-fit"
-              )}
+              href="/cheatsheets"
+              className={cn(buttonVariants({ variant: "tertiary", size: "xl" }), "w-full sm:w-fit")}
             >
-              GitHub
+              Looking for Cheatsheets! 😍
             </Link>
           </div>
         </div>
-      </section>
-      <section className="container max-w-4xl py-6 lg:py-10 flex flex-col space-y-6 mt-60">
-        <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-center">
-          Latest Posts
-        </h2>
-        <ul className="flex flex-col">
-          {latestPosts.map(
-            (post) =>
-              post.published && (
-                <li
-                  key={post.slug}
-                  className="first:border-t first:border-border"
-                >
-                  <PostItem
-                    slug={post.slug}
-                    title={post.title}
-                    description={post.description}
-                    date={post.date}
-                    tags={post.tags}
-                  />
-                </li>
-              )
-          )}
-        </ul>
       </section>
     </>
   );

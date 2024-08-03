@@ -6,7 +6,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Tags",
-    description: "Topics by Reggie"
+    description: "Topics for .reggienotes"
 }
 
 export default async function TagsPage() {
@@ -15,13 +15,13 @@ export default async function TagsPage() {
   
     return (
       <div className="container max-w-4xl py-6 lg:py-10">
-        <div className="flex flex-col items-start gap-4 md:flex-row md:justify-between md:gap-8">
+        <div className="flex flex-col items-start gap-4 my-3 md:flex-row md:justify-between md:gap-8">
           <div className="flex-1 space-y-4">
             <h1 className="inline-block font-black text-4xl lg:text-5xl">Tags</h1>
           </div>
         </div>
-        <hr className="my-4" />
         <div className="flex flex-wrap gap-2">
+          <hr className="mt-8 border-border border-b border-foreground" />
           {sortedTags?.map((tag) => (
             <Tag tag={tag} count={tags[tag]} key={tag} />
           ))}

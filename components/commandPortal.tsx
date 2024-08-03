@@ -66,14 +66,14 @@ import { useRouter } from "next/navigation";
         onRender={({ item, active }) =>
           typeof item === "string" ? (
             // Section header
-            <div className="text-sm uppercase px-4 pt-3 pb-1 text-neutral-500 font-bold">
+            <div className="text-sm text-tertiary uppercase px-4 pt-3 pb-1 text-neutral-500 font-bold">
               {item}
             </div>
           ) : (
             // Single action
             <div
-              className={`text-black flex px-4 py-3 ${
-                active ? "bg-[#eeeeee]" : "bg-transparent"
+              className={`mx-3 text-sm text-foreground flex px-4 py-3 ${
+                active ? "bg-[#eeeeee] text-background" : "bg-transparent"
               }`}
             >
               {item.name}

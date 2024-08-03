@@ -1,4 +1,5 @@
 import { Icons } from "../icons"
+import { Button } from "../ui/button"
 
 const ACTION_KEY_DEFAULT = "CTRL"
 
@@ -12,10 +13,11 @@ export const SearchBar = ({
   kbd = ACTION_KEY_DEFAULT,
 }: SearchBarProps) => {
   return (
-    <button
+    <Button
+    variant={"ghost"}
       onClick={onClick}
       title="Search"
-      className="mx-4 flex size-[34px] cursor-text items-center justify-center rounded-md border border-gray-800 bg-gray-50 px-2 text-sm hover:border-blue-600 hover:bg-gray-100 dark:border-gray-200 dark:bg-gray-900 dark:hover:border-blue-600 dark:hover:bg-gray-800 [@media(min-width:900px)]:w-[unset]"
+      className="sm:mx-4 w-min-[34px] cursor-text items-center justify-center rounded-md border border-foreground bg-gray-50 px-2 text-sm hover:border-primary hover:bg-gray-100 dark:border-gray-200 dark:bg-gray-900 dark:hover:border-blue-600 dark:hover:bg-gray-800 [@media(min-width:900px)]:w-[unset]"
     >
       <span className="my-2 block  w-4 [@media(min-width:900px)]:mr-2">
         <Icons.search />
@@ -33,6 +35,6 @@ export const SearchBar = ({
       >
         K
       </kbd>
-    </button>
+    </Button>
   )
 }

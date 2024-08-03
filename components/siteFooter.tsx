@@ -24,7 +24,7 @@ export function SiteFooter() {
                 </div>
                 <div className="mb-2 flex space-x-2 text-sm text-muted-foreground">
                     <Link href={siteConfig.links.personalSite} target="_blank" rel="noreferrer">
-                        {siteConfig.author}
+                        {siteConfig.author} &copy; 2024
                     </Link>
                 </div>
             </div>

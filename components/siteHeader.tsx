@@ -102,7 +102,7 @@ export function SiteHeader() {
         <header className="z-10 sticky top-0 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filyer]:bg-background/60">
             <div className="container flex h-14 min-w-full max-w-screen-2xl items-center">
                 {pathname !== "/" ? 
-                    (<Button onClick={router.back}>Back</Button>)
+                    (<Button variant={"outline"} onClick={router.back} className="hidden sm:inline-flex">Back</Button>)
                     :
                     null
                 }
@@ -148,7 +148,7 @@ export function SiteHeader() {
                     />
                     <CommandPortal actions={getActions()} />
                 </KBarProvider>
-                <nav className="flex flex-1 items-center sm:justify-center space-x-4 lg:space-x-6">
+                <nav className="flex flex-1 items-center justify-center space-x-4 lg:space-x-6">
                     <MainNav />
                 </nav>
                 <nav className="flex items-center justify-end hidden sm:inline-flex">

@@ -8,7 +8,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Posts",
-    description: "Reggie's dummy-dummy notes or posts or thoughts or whatever..."
+    description: "Posts or notes provided by Regina."
 }
 
 const POSTS_PER_PAGE = 5;
@@ -31,17 +31,17 @@ export default async function PostsPage({ searchParams }: PostPageProps) {
 
     return (
         <div className="container max-w-4xl py-6 lg:py-10">
-            <div className="flex flex-col items-start gap-4 md:flex-row md:justify-between">
+            <div className="flex flex-col items-start gap-4 my-3 md:flex-row md:justify-between">
                 <div className="flex-1 space-y-4">
                     <h1 className="inline-block font-black text-4xl lg:text-5xl">Posts</h1>
                     <p className="text-xl text-muted-foreground">
-                        Reggie's dummy-dummy notes or posts or thoughts or whatever...
+                        Regina's dummy-dummy notes or posts or thoughts or whatever...
                     </p>
                 </div>
             </div>
             <div className="grid grid-cols-12 gap-3 mt-8">
                 <div className="col-span-12 col-start-1 sm:col-span-8">
-                    <hr className="mt-8" />
+                    <hr className="mt-8 border-border border-b border-foreground" />
                     {displayPosts?.length > 0 ? (
                         <ul className="flex flex-col">
                             {displayPosts.map(post => {
@@ -62,7 +62,7 @@ export default async function PostsPage({ searchParams }: PostPageProps) {
                         )
                         :
                         (
-                        <p>Reggie has nothing to show here yet.</p>
+                        <p>Regina has nothing to show here yet.</p>
                     )}
                     <QueryPagination totalPages={totalPages} className="justify-end mt-4"></QueryPagination>
                 </div>
