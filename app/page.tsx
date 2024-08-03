@@ -18,7 +18,7 @@ export default function Home() {
             Congratulation!🥳 You have found the hidden space of notes and cheatsheets written by Regina!
           </p>
           <p className="max-w-[42rem] mx-auto text-muted-foreground sm:text-xl text-balance">
-            Let's get started!🤪
+            Let&apos;s get started!🤪
           </p>
           <div className="w-full flex flex-col gap-4 justify-center mt-5 sm:flex-row">
             <Link

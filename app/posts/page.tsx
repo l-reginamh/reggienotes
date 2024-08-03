@@ -35,7 +35,7 @@ export default async function PostsPage({ searchParams }: PostPageProps) {
                 <div className="flex-1 space-y-4">
                     <h1 className="inline-block font-black text-4xl lg:text-5xl">Posts</h1>
                     <p className="text-xl text-muted-foreground">
-                        Regina's dummy-dummy notes or posts or thoughts or whatever...
+                        Regina&apos;s dummy-dummy notes or posts or thoughts or whatever...
                     </p>
                 </div>
             </div>

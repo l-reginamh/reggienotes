@@ -17,7 +17,7 @@ export default async function CheatsheetsPage() {
                 <div className="flex-1 space-y-4">
                     <h1 className="inline-block font-black text-4xl lg:text-5xl">Cheatsheets</h1>
                     <p className="text-xl text-muted-foreground">
-                        Regina's lovie dovie cheatsheets.
+                        Regina&apos;s lovie dovie cheatsheets.
                     </p>
                 </div>
             </div>
