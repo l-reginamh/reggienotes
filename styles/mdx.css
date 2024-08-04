@@ -1,3 +1,11 @@
+[data-rehype-pretty-code-figure] {
+  @apply mt-0
+}
+
+[data-rehype-pretty-code-figure] figcaption {
+  @apply ml-2 mb-2 text-foreground
+}
+
 [data-rehype-pretty-code-figure] pre {
   @apply px-0;
 }

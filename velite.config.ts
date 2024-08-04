@@ -52,17 +52,17 @@ export default defineConfig({
     mdx: {
         rehypePlugins: [
             rehypeSlug, 
-            [rehypePrettyCode, {theme: "one-dark-pro"}], 
-            [
-                rehypeAutolinkHeadings,
-                {
-                    behavior: "wrap",
-                    properties: {
-                        className: ["subheading-anchor"],
-                        ariaLabel: "Link to section",
-                    },
-                },
-            ],
+            [rehypePrettyCode, {theme: "material-theme-lighter"}], 
+            // [
+            //     rehypeAutolinkHeadings,
+            //     {
+            //         behavior: "wrap",
+            //         properties: {
+            //             className: ["subheading-anchor"],
+            //             ariaLabel: "Link to section",
+            //         },
+            //     },
+            // ],
         ],
         remarkPlugins: [],
     }
