@@ -1,0 +1,39 @@
+---
+title: MySQL
+description: MySQL commands
+date: 2024-08-04
+published: true
+---
+
+```sql title="SELECT"
+    SELECT [DISTINCT | TOP n] <ColumnName, ColumnName, ...>
+    FROM <TableName.a, TableName.b>
+    [INNER JOIN | LEFT JOIN | RIGHT JOIN | FULL OUTER JOIN <TableName.c> ON a.ColumnName=b.ColumnName]
+    WHERE <conditions, ...>
+    GROUP BY <ColumnName, ...>
+    HAVING <conditions, ...>
+    ORDER BY <ColumnName, ...>
+```
+
+```sql title="CREATE"
+    CREATE TABLE TableName (
+        column1 datatype,
+        column2 datatype,
+        column3 datatype,
+        ....
+    );
+```
+```sql title="UPDATE"
+    UPDATE <TableName>
+    SET column1 = value1, column2 = value2, ...
+    WHERE <conditions, ...>;
+```
+
+```sql title="DELETE"
+    DELETE FROM <TableName> WHERE <conditions, ...>;
+```
+        
+```sql title="DROP"
+    DROP DATABASE <dbName>
+    DROP TABLE <tableName>
+```
