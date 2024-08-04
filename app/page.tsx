@@ -25,7 +25,7 @@ export default function Home() {
               href="/posts"
               className={cn(buttonVariants({ variant: "secondary", size: "xl" }), "w-full sm:w-fit")}
             >
-              Checkout Posts!
+              Checkout Posts! 🤯
             </Link>
             <Link
               href="/cheatsheets"
