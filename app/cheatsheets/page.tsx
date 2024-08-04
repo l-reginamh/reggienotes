@@ -29,7 +29,7 @@ export default async function CheatsheetsPage() {
                             {displaySheets.map((sheet, index) => {
                                 const {slug, date, title, description, tags} = sheet
                                 return (
-                                    <li key={slug} className={`rounded-md px-3 ${index%4===0 ? "bg-primary" : index%4===1 ? "bg-secondary" : index%4===2 ? "bg-tertiary" : "bg-muted"}`}>
+                                    <li key={slug} className={`rounded-md px-3 hover:bg-secondary ${index%4===0 ? "bg-rose-50" : index%4===1 ? "bg-amber-50" : index%4===2 ? "bg-cyan-50" : "bg-slate-50"}`}>
                                         <SheetItem
                                             slug={slug}
                                             title={title}
