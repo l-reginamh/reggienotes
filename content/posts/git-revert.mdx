@@ -1,0 +1,31 @@
+---
+title: Let's Reset!
+description: Sometimes we might accidentally pushed a wrong commit and started to feel panic! No worries, just reset!
+tags: ["git"]
+date: 2024-08-04
+published: true
+---
+
+This following command will help reset the commit to the previous one before our "wrong" commit.
+```bash
+git reset HEAD~1
+git push origin branch-name -f
+```
+
+This `git reset` is available with 5 modes: 
+```bash
+--mixed
+--soft
+--hard
+--merge
+--keep
+```
+
+Our default mode here is `--mixed` mode where when it remove the commits, our changes will still be kept in our working tree but not on the index. So if we wanna perform another commit with the same changes, we will need to `git add` the changes back before commit.
+
+While `--soft` mode is similar to the default mode just that our changes will be kept in both our working tree and the index. 
+
+We can think of `--hard` mode as the "hell mode" where it will not be keeping any changes and untracked files. Once we reset with the `--hard` mode, we lose all the changes we've made in our local.
+
+`--keep` and `--merge` modes work similar in the they both reset the index and files from working tree that are different between the resetted commit and HEAD, but `--merge` mode is keeping our unstaged changes. 
+If a file to be reset is having local changes, `--keep` mode will abort the reset action; while `--merge` will abort the reset when the file to be reset has unstaged changes in our local.
