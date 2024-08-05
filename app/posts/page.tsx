@@ -1,4 +1,5 @@
 import { posts } from "#site/content";
+import AdBanner from "@/components/ads/adBanner";
 import { PostItem } from "@/components/postItem";
 import { QueryPagination } from "@/components/queryPagination";
 import { Tag } from "@/components/tag";
@@ -28,6 +29,9 @@ export default async function PostsPage({ searchParams }: PostPageProps) {
 
     const tags = getAllPostTags(posts);
     const sortedTags = sortTagsByCount(tags);
+
+    const gad = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE as string;
+    const aup = process.env.NEXT_PUBLIC_AD_UNIT_POSTS as string;
 
     return (
         <div className="container max-w-4xl py-6 lg:py-10">
@@ -66,14 +70,24 @@ export default async function PostsPage({ searchParams }: PostPageProps) {
                     )}
                     <QueryPagination totalPages={totalPages} className="justify-end mt-4"></QueryPagination>
                 </div>
-                <Card className="col-span-12 row-start-3 h-fit sm:col-span-4 sm:col-start-9 sm:row-start-1">
-                    <CardHeader>
-                        <CardTitle>Tags</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-wrap gap-2">
-                        {sortedTags?.map((tag) => (<Tag tag={tag} key={tag} count={tags[tag]}></Tag>))}
-                    </CardContent>
-                </Card>
+                <div className="col-span-12 row-start-3 h-fit sm:col-span-4 sm:col-start-9 sm:row-start-1">
+                    <Card className="">
+                        <CardHeader>
+                            <CardTitle>Tags</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex flex-wrap gap-2">
+                            {sortedTags?.map((tag) => (<Tag tag={tag} key={tag} count={tags[tag]}></Tag>))}
+                        </CardContent>
+                    </Card>
+                    <div className="bg-black my-5">
+                        <AdBanner
+                            dataAdFormat="auto"
+                            dataFullWidthResponsive={true}
+                            dataAdSlot={aup}
+                            pId={gad}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );

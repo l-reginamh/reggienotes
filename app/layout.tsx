@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/siteHeader";
 import { Providers } from "@/components/providers";
 import { siteConfig } from "@/config/site";
 import { SiteFooter } from "@/components/siteFooter";
+import AdSense from "@/components/ads/adSense";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -27,8 +28,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gad = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE as string;
   return (
     <html lang="en" className="scroll-pt-[3.5rem]">
+      <head>
+        <AdSense pId={gad} />
+      </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased", inter.variable)}>
         <Providers>
           <div className="relative flex min-h-dvh flex-col bg-background">

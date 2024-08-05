@@ -5,6 +5,7 @@ import "@/styles/mdx.css";
 import { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { Tag } from "@/components/tag";
+import AdBanner from "@/components/ads/adBanner";
 
 interface PostPageProps {
     params: {
@@ -67,6 +68,9 @@ export default async function PostPage({params}: PostPageProps) {
         notFound();
     }
 
+    const gad = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE as string;
+    const aupc = process.env.NEXT_PUBLIC_AD_UNIT_POSTS_CONTENT as string;
+
     return (
         <article className="container py-6 prose dark:prose-invert max-w-3xl">
             <h1 className="mb-2">{post.title}</h1>
@@ -83,6 +87,14 @@ export default async function PostPage({params}: PostPageProps) {
             }
             <hr className="my-4" />
             <MDXContent code={post.body} />
+            <div className="bg-black my-5">
+                <AdBanner
+                    dataAdFormat="auto"
+                    dataFullWidthResponsive={true}
+                    dataAdSlot={aupc}
+                    pId={gad}
+                />
+            </div>
         </article>
     )
 }
