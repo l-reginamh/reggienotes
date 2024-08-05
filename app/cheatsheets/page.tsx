@@ -25,11 +25,11 @@ export default async function CheatsheetsPage() {
                 <div className="col-span-12 col-start-1">
                     <hr className="my-8 border-border border-b border-foreground" />
                     {displaySheets?.length > 0 ? (
-                        <ul className="grid grid-cols-3 gap-2">
+                        <ul className="grid sm:grid-cols-3 gap-2">
                             {displaySheets.map((sheet, index) => {
                                 const {slug, date, title, description, tags} = sheet
                                 return (
-                                    <li key={slug} className={`rounded-md px-3 hover:bg-secondary ${index%4===0 ? "bg-rose-50" : index%4===1 ? "bg-amber-50" : index%4===2 ? "bg-cyan-50" : "bg-slate-50"}`}>
+                                    <li key={slug} className={`rounded-md px-3 dark:text-background hover:bg-secondary ${index%4===0 ? "bg-rose-50" : index%4===1 ? "bg-amber-50" : index%4===2 ? "bg-cyan-50" : "bg-slate-50"}`}>
                                         <SheetItem
                                             slug={slug}
                                             title={title}
