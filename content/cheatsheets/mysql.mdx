@@ -16,24 +16,98 @@ published: true
 ```
 
 ```sql title="CREATE"
+    -- create table
     CREATE TABLE TableName (
         column1 datatype,
         column2 datatype,
         column3 datatype,
         ....
     );
+
+    -- create view table
+    CREATE OR REPLACE VIEW <ViewTableName>
+    AS 
+    SELECT
+    column1,
+    column2,
+    FROM
+    <TableName>;
 ```
 ```sql title="UPDATE"
     UPDATE <TableName>
     SET column1 = value1, column2 = value2, ...
-    WHERE <conditions, ...>;
+    WHERE <conditions, ...>
+    [EXISTS (<subquery>)];
 ```
 
-```sql title="DELETE"
+```sql title="DELETE" 
     DELETE FROM <TableName> WHERE <conditions, ...>;
+
+    -- truncate will delete and reset the auto-increment counter
+    TRUNCATE FROM <TableName>;
 ```
         
 ```sql title="DROP"
     DROP DATABASE <dbName>
     DROP TABLE <tableName>
+```
+
+```sql title="STORE PROCEDURES"
+    -- create the store procedure
+    DELIMITER //
+    CREATE PROCEDURES <ProcedureName>(
+        IN <ParameterInName> <DataType>,
+        ...
+    ) BEGIN
+        -- can perform any sql command
+    END //
+    DELIMITER ;
+
+    -- execute the store procedure
+    CALL <ProcedureName>(<ParameterInName>, <ParameterInName>, ...);
+```
+
+
+```sql title="TRIGGER"
+    DELIMITER //
+    CREATE TRIGGER <TriggerName>
+    [BEFORE|AFTER] [CREATE|UPDATE|DELETE|]
+    ON <TableName>
+    FOR EACH ROW
+    BEGIN
+        -- can perform any sql command
+        -- if action is UPDATE; OLD.<TableColumn> for old record and NEW.<TableColumn> for new record
+        -- if action is CREATE|DELETE; Only have OLD.<TableColumn> for old record
+    END //
+
+    DELIMITER ;
+```
+
+```sql title="FUNCTION"
+    DELIMITER //
+    CREATE FUNCTION <FunctionName>(
+        <ParameterName> <DataType>
+    )
+    RETURNS <DataType>
+    [DETERMINISTIC]
+    BEGIN
+        RETURN <FunctionBody>
+    END //
+    DELIMITER ;
+
+    -- run the function
+    SELECT <FunctionName>();
+```
+
+```sql title="EVENTS"
+    DELIMITER //
+    CREATE EVENT <EventName>
+    ON SCHEDULE 
+    <ScheduleTime>
+    DO
+    BEGIN
+        -- can perform any sql command
+        -- can call store procedure. Eg. CALL <StoreProcedureName>();
+    END //
+    DELIMITER ;
 ```
