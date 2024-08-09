@@ -1,0 +1,17 @@
+---
+title: Why are we using lombok.config?
+description: This is a solution for situation where we are doing unit test for our code but we are not able to cover our POJO classes unit test due to lombok annotation we used.
+tags: ["java", "lombok", "junit", "unit test"]
+date: 2024-08-09
+published: true
+---
+
+Create a `lombok.config` file in our Java project root and add the following configuration in the file:
+
+```yaml
+config.stopbubbling=true #tells the configuration system not to search for config files in the parent directories
+lombok.addLombokGeneratedAnnotation=true #to mark all generated methods with @lombok.Generated. This will be removing lombok generated methods from package scanning or code coverage tools.
+```
+
+
+Reference: <a href="https://baeldung.com/lombok-configuration-system" target="_blank">Lombok Configuration System</a>
