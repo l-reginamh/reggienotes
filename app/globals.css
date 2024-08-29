@@ -71,8 +71,13 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-.border-top {
-  border-top: 1px solid;
+  .cheatsheets [data-rehype-pretty-code-figure] pre, .cheatsheets [data-rehype-pretty-code-figure] pre span  {
+    @apply text-xs
+  }
+  .cheatsheets [data-rehype-pretty-code-figure] {
+    @apply border border-foreground rounded-md mb-2 bg-white p-5
+  }
+  .cheatsheets [data-rehype-pretty-code-figure] figcaption {
+    @apply mb-4 mx-0 mt-0 text-foreground dark:text-background
+  }
 }

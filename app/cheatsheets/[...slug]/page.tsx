@@ -70,7 +70,8 @@ export default async function SheetPage({params}: SheetPageProps) {
         <article className="container py-6 prose dark:prose-invert max-w-screen-xl w-screen">
             <h1 className="my-3 text-muted-foreground dark:text-foreground">{sheet.title}</h1>
             <hr className="my-8 border-border border-b border-foreground" />
-            <div className="flex flex-col w-full">
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full cheatsheets"> */}
+            <div className="flex flex-col w-full cheatsheets">
                 <MDXContent code={sheet.body} />
             </div>
         </article>
