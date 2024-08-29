@@ -6,7 +6,7 @@ import { MobileNav } from "./nav/mobileNav";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { posts, cheatsheets } from "../.velite"
-import { KBarProvider, Priority, useKBar } from "kbar";
+import { KBarProvider, Priority } from "kbar";
 import { siteConfig } from "@/config/site";
 import { useMemo } from "react";
 import { SearchBar } from "./nav/searchBar";
@@ -102,11 +102,15 @@ export function SiteHeader() {
     return (
         <header className="z-10 sticky top-0 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filyer]:bg-background/60">
             <div className="container flex h-14 min-w-full max-w-screen-2xl items-center">
-                {pathname !== "/" ? 
+                <MobileNav />
+                {/* {pathname !== "/" ? 
                     (<Button variant={"ghost"} onClick={router.back} className="hidden sm:inline-flex"><Icons.back className="h-4 w-4" /></Button>)
                     :
                     null
-                }
+                } */}
+                <nav className="flex flex-1 items-center space-x-4 lg:space-x-6">
+                    <MainNav />
+                </nav>
                 <KBarProvider actions={getActions()}>
                     <SearchBar
                         onClick={() => {
@@ -149,13 +153,9 @@ export function SiteHeader() {
                     />
                     <CommandPortal actions={getActions()} />
                 </KBarProvider>
-                <nav className="flex flex-1 items-center justify-center space-x-4 lg:space-x-6">
-                    <MainNav />
-                </nav>
                 <nav className="flex items-center justify-end hidden sm:inline-flex">
                     <SideNav />
                 </nav>
-                <MobileNav />
             </div>
         </header>
     );

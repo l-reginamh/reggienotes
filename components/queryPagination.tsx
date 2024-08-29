@@ -33,6 +33,8 @@ export function QueryPagination({
     return `${pathname}?${params.toString()}`;
   };
 
+  console.log("totalPages: " + totalPages)
+
   return (
     <Pagination className={className}>
         <PaginationContent>
@@ -57,7 +59,7 @@ export function QueryPagination({
             }
 
             {
-                nextPage >= 1 ? (
+                nextPage >= 1 && totalPages > 1 ? (
                     <PaginationItem>
                         <PaginationNext href={createPageURL(nextPage)} />
                     </PaginationItem>
