@@ -8,7 +8,6 @@ import {
     useMatches,
     useRegisterActions,
   } from "kbar";
-import { useRouter } from "next/navigation";
   import React, { HTMLAttributes } from "react";
   
   interface CommandBarProps extends HTMLAttributes<HTMLElement> {
@@ -17,7 +16,6 @@ import { useRouter } from "next/navigation";
   
   const CommandPortal: React.FC<CommandBarProps> = ({ actions, children }) => {
     useRegisterActions(actions, [actions])
-    const router = useRouter()
 
     return (
         <>
@@ -73,7 +71,7 @@ import { useRouter } from "next/navigation";
             // Single action
             <div
               className={`mx-3 text-sm text-foreground flex px-4 py-3 ${
-                active ? "bg-[#eeeeee] text-background" : "bg-transparent"
+                active ? "bg-[#eeeeee] dark:bg-[#004f61] text-background" : "bg-transparent"
               }`}
             >
               {item.name}

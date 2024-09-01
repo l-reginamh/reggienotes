@@ -14,15 +14,15 @@ interface PostItemProps {
 
 export function PostItem({slug, title, description, date, tags}: PostItemProps) {
     return (
-        <article className="flex flex-col gap-2 border-border  bg-white rounded-md p-4 my-3 shadow-md hover:shadow-xl cursor-pointer">
+        <article className="flex flex-col gap-2 border-border  bg-white rounded-md p-4 my-3 shadow-md hover:shadow-xl cursor-pointer hover:dark:shadow-foreground hover:dark:shadow-lg">
             <div>
-                <h2 className="text-3xl font-bold pb-1">
+                <h2 className="text-3xl font-bold pb-1 dark:text-background">
                     <Link href={"/" + slug}>{title}</Link>
                 </h2>
                 <div className="flex gap-2 pb-2">
                     {tags?.map(tag => (<Tag tag={tag} key={tag}></Tag>))}
                 </div>
-                <div className="max-w-none text-muted-foreground text-sm">{description}</div>
+                <div className="max-w-none text-sm dark:text-background">{description}</div>
                 <div className="flex justify-between items-center">
                     <dl>
                         <dt className="sr-only">Published On</dt>

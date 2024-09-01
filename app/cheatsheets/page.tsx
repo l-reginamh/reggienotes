@@ -25,7 +25,7 @@ export default async function CheatsheetsPage() {
                             {displaySheets.map((sheet, index) => {
                                 const {slug, date, title, description, tags} = sheet
                                 return (
-                                    <li key={slug} className={`w-full rounded-md bg-white shadow-md hover:shadow-xl dark:text-background `}>
+                                    <li key={slug} className={`w-full rounded-md bg-white shadow-md hover:shadow-xl hover:dark:shadow-lg hover:dark:shadow-foreground dark:text-background`}>
                                         <SheetItem
                                             slug={slug}
                                             title={title}

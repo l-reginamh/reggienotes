@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -19,6 +19,7 @@ export function QueryPagination({
   totalPages,
   className,
 }: QueryPaginationProps) {
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -33,7 +34,9 @@ export function QueryPagination({
     return `${pathname}?${params.toString()}`;
   };
 
-  console.log("totalPages: " + totalPages)
+  if (currentPage > totalPages) {
+    router.push(createPageURL(totalPages));
+  }
 
   return (
     <Pagination className={className}>
@@ -59,7 +62,7 @@ export function QueryPagination({
             }
 
             {
-                nextPage >= 1 && totalPages > 1 ? (
+                nextPage >= 1 && totalPages >= nextPage ? (
                     <PaginationItem>
                         <PaginationNext href={createPageURL(nextPage)} />
                     </PaginationItem>
