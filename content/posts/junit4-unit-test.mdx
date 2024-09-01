@@ -1,0 +1,76 @@
+---
+title: JUnit 4 Unit Testing with Mockito
+description: This is a basic sample of unit test written with JUnit 4 and Mockito.
+tags: ["java", "junit", "unit test", "mock", "mockito"]
+date: 2024-08-31
+published: true
+---
+
+First of all, to use JUnit 4, we&apos;ll need to add dependency of `junit`.
+
+Let&apos;s use gradle as example. Inside build.gradle, we&apos;ll need to setup the unit test platform to the build tool.
+
+```java
+dependencies {
+	compile "junit:junit:x.x.x"
+	testCompile"org.mockito:mockito-core:x.x.x"
+}
+
+test {
+    useJUnitPlatform()
+}
+```
+
+JUnit Runner is a class extends JUnit&apos;s abstract Runner class that responsible for running JUnit tests. To run test runners, we&apos;ll need the `@RunWith` annotation.
+
+```java
+@RunWith(MockitoJUnitRunner.class)
+public class JUnitTesting {
+	@InjectMocks
+	private TestObject testObject;
+		
+	@Mock
+	private MockClass mockClass;
+		
+	@Test
+	@DisplayName("This is a description of the JUnit Test below.")
+	public void testMethod() {
+		Mockito.when(mockClass.mockMethod()).thenReturn("sample");
+		String result = testObject.callMethod(mockClass);
+		assertEqual("sample", result);
+	}
+}
+```
+
+You might have your own idea of not using annotation, in that case you could refer to the following sample:
+
+```java
+public class JUnitTesting {
+	@InjectMocks
+	private TestObject testObject;
+	
+	private MockClass mockClass;
+		
+	@Before
+	public void init() {
+		//this line should work the same as @RunWith(MockitoJUnitRunner.class)
+		MockitoAnnotations.openMocks(this);
+				
+		//we can also create mock without using annotation
+		mockClass = Mockito.mock(MockClass.class)
+	}
+		
+	@Test
+	@DisplayName("This is a description of the JUnit Test below.")
+	public void testMethod() {
+		Mockito.when(mockClass.mockMethod()).thenReturn("sample");
+		String result = testObject.callMethod(mockClass);
+		assertEqual("sample", result);
+	}
+}
+```
+
+<br />
+For more information, check on this link:
+
+[SpringRunner vs MockitoJUnitRunner | Baeldung](https://www.baeldung.com/junit-springrunner-vs-mockitojunitrunner)

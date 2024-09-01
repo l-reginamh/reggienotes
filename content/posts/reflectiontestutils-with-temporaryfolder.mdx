@@ -1,0 +1,46 @@
+---
+title: Using ReflectionTestUtils with TemporaryFolder
+description: This TemporaryFolder help us while doing unit test to create temporary files and folders that could be deleted when the test method finish running.
+tags: ["java", "unit test"]
+date: 2024-08-31
+published: true
+---
+
+There are sometimes where the class or method required for unit test is having a file related parts such as looking for some specific file and require to read the file&apos;s content.
+
+Here comes to the `TemporaryFolder`.
+
+The `TemporaryFolder` Rule allows creation of files and folders that should be deleted when the test method finishes.
+
+```java
+public class UnitTest {
+	@InjectMock
+	private SampleClass testObject;
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
+	private File tempFolder;
+	private File tempFile;
+	
+	@After
+	public void tearDown() {
+		folder.delete();
+	}
+
+	@Test
+	public void testCase() {
+		tempFolder = folder.newFolder("temp");
+		tempFile = new File(tempFolder, "tempFile.txt");
+		boolean isCreated = tempFile.createNewFile();
+		if (isCreated) {
+			FileOutputStream outputStream = new FileOutputStream(tempFile);
+			String fileContent = "testing";
+			byte[] strToBytes = fileContent.getBytes(StandardCharsets.UTF_8);
+			outputstream.write(strToBytes);
+			outputstream.close();
+		}
+
+		//Incase where the field that storing the path is private, use ReflectionTestUtils and set the path to our temporary path for only testing purpose
+		ReflectionTestUtils.setField(testObject, "path", tempFolder.getAbsolutePath()+"\\");
+	}
+}
+```

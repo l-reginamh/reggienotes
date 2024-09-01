@@ -1,0 +1,60 @@
+---
+title: JUnit 5 Unit Testing with Mockito
+description: This is a basic sample of unit test written with JUnit 5 and Mockito.
+tags: ["java", "junit", "unit test", "mock", "mockito"]
+date: 2024-08-31
+published: true
+---
+
+To use JUnit 5, we will have to add dependencies of `junit-jupiter-engine` , `junit-jupiter-api`, and `junit-vintage-engine`.
+
+Similar as JUnit 4, we need to setup the unit test platform in the build tool but having some differences with the unit test platform content
+
+```java
+dependencies {
+	testImplementation "org.junit.jupiter:junit-jupiter-api:x.x.x"
+	testImplementation "org.junit.jupiter:junit-jupiter-engine:x.x.x"
+	testImplementation "org.junit.jupiter:junit-jupiter-params:x.x.x"
+	testImplementation "org.junit.vintage:junit-jupiter-engine:x.x.x"
+	testImplementation "org.junit.platform:junit-platform-launcher:x.x.x"
+	testImplementation "org.mockito:mockito-core:x.x.x"
+}
+
+test {
+    useJUnitPlatform {
+	    includeEngines 'junit-jupiter', 'junit-engine'
+    }
+}
+```
+
+<Callout icon="💡">
+Just a gentle reminder here that once we setup the unit test platform to include JUnit 5 engine, it has the possibility where JUnit 4 unit tests will not be detectable.
+</Callout>
+
+We have some difference between JUnit 4 and JUnit 5. Let&apos;s say the annotation, in JUnit 5, we are using `@ExtendWith` annotation.
+
+```java
+@ExtendWith(MockitoExtension.class)
+class JUnit5Testing {
+	@InjectMocks
+	private TestObject testObject;
+		
+	@Mock
+	private MockClass mockClass;
+		
+	@Test
+	void testMethod() {
+		Mockito.when(mockClass.mockMethod()).thenReturn("sample");
+		String result = testObject.callMethod(mockClass);
+		assertEqual("sample", result);
+	}
+}
+```
+
+<br />
+
+For more information, check out on this link:
+
+[Using JUnit 5 with Gradle | Baeldung](https://www.baeldung.com/junit-5-gradle)
+
+[A Guide to JUnit 5 Extensions | Baeldung](https://www.baeldung.com/junit-5-extensions)

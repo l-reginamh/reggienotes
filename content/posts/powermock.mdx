@@ -1,0 +1,30 @@
+---
+title: PowerMock to Save The Day
+description: We do have some situation where we are not able to touch any of the code, while the code's dependency versions are restricted and we're not able to use MockedStatic, so PowerMock is one of the option for our approach.
+tags: ["java", "junit", "unit test", "mock"]
+date: 2024-08-31
+published: true
+---
+
+<Callout icon="⏰">
+Checkout the following sample with explanation for PowerMock.
+</Callout>
+
+```java
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({StaticClass1.class, StaticClass2.class, ...})           //this is the list of class we're expecting to use PowerMock
+@SuppressStaticInitializationFor({"class.path", ...})                    //we use this annotation to suppress static initializers
+public class PowerMockUnitTest {
+	private TestObject testObject;
+
+	@Before
+	public void setup() {
+        suppress(constructor(StaticClass1.class));                      //suppress all constructor from StaticClass1
+		suppress(method(StaticClass1.class), "methodNameToSuppress");   //suppress the method with "methodNameToSurpress" from StaticClass1
+        suppress(field(StaticClass1.class), "fieldNameToSuppress");     //suppress the field with "fieldNameToSurpress" from StaticClass1
+				
+		PowerMockito.mockStatic(StaticClass2.class);                    //to mock all methods from StaticClass2
+		when(StaticClass2.getMethod()).thenReturn("expected")           //set the expected return value from StaticClass2 method
+	}
+}
+```
