@@ -22,7 +22,7 @@ import {
             <KBarPortal>
                 <KBarPositioner className="bg-gray-300/50 p-4 backdrop-blur dark:bg-black/50">
                     <KBarAnimator className="w-full max-w-xl">
-                        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
+                        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-background">
                         <div className="flex items-center space-x-4 p-4">
                         <span className="block w-5">
                             <svg
@@ -71,7 +71,7 @@ import {
             // Single action
             <div
               className={`mx-3 text-sm text-foreground flex px-4 py-3 ${
-                active ? "bg-[#eeeeee] dark:bg-[#004f61] text-background" : "bg-transparent"
+                active ? "bg-[#eeeeee] dark:bg-[#00252e] text-background" : "bg-transparent"
               }`}
             >
               {item.name}
