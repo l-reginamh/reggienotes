@@ -34,7 +34,7 @@ export function QueryPagination({
     return `${pathname}?${params.toString()}`;
   };
 
-  if (currentPage > totalPages) {
+  if (totalPages > 0 && currentPage > totalPages) {
     router.push(createPageURL(totalPages));
   }
 

@@ -78,14 +78,19 @@ export default function Home({ searchParams }: PostPageProps) {
                     )}
                     <QueryPagination totalPages={totalPages} className="justify-end mt-4"></QueryPagination>
                 </div>
-                <Card className="col-span-12 row-start-3 h-fit sm:col-span-4 sm:col-start-9 sm:row-start-1 mt-3">
-                    <CardHeader>
-                        <CardTitle>Tags</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-wrap gap-2">
-                        {sortedTags?.map((tag) => (<Tag tag={tag} key={tag} count={tags[tag]}></Tag>))}
-                    </CardContent>
-                </Card>
+                {
+                  sortedTags?.length > 0 &&
+                  (
+                    <Card className="col-span-12 row-start-3 h-fit sm:col-span-4 sm:col-start-9 sm:row-start-1 mt-3">
+                      <CardHeader>
+                          <CardTitle>Tags</CardTitle>
+                      </CardHeader>
+                      <CardContent className="flex flex-wrap gap-2">
+                          {sortedTags?.map((tag) => (<Tag tag={tag} key={tag} count={tags[tag]}></Tag>))}
+                      </CardContent>
+                    </Card>
+                  )
+                }
             </div>
         </div>
       </section>
