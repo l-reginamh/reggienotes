@@ -100,7 +100,7 @@ export function SiteHeader() {
 
 
     return (
-        <header className="z-10 sticky top-0 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filyer]:bg-background/60">
+        <header className="z-10 sticky top-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filyer]:bg-background/60">
             <div className="container flex h-14 min-w-full max-w-screen-2xl items-center">
                 {pathname !== "/" ? 
                     (<Button variant={"ghost"} onClick={router.back} className="hidden sm:inline-flex"><Icons.back className="h-4 w-4" /></Button>)
