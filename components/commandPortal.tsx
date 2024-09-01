@@ -8,7 +8,6 @@ import {
     useMatches,
     useRegisterActions,
   } from "kbar";
-import { useRouter } from "next/navigation";
   import React, { HTMLAttributes } from "react";
   
   interface CommandBarProps extends HTMLAttributes<HTMLElement> {
@@ -17,14 +16,13 @@ import { useRouter } from "next/navigation";
   
   const CommandPortal: React.FC<CommandBarProps> = ({ actions, children }) => {
     useRegisterActions(actions, [actions])
-    const router = useRouter()
 
     return (
         <>
             <KBarPortal>
                 <KBarPositioner className="bg-gray-300/50 p-4 backdrop-blur dark:bg-black/50">
                     <KBarAnimator className="w-full max-w-xl">
-                        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
+                        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-background">
                         <div className="flex items-center space-x-4 p-4">
                         <span className="block w-5">
                             <svg
@@ -73,7 +71,7 @@ import { useRouter } from "next/navigation";
             // Single action
             <div
               className={`mx-3 text-sm text-foreground flex px-4 py-3 ${
-                active ? "bg-[#eeeeee] text-background" : "bg-transparent"
+                active ? "bg-[#eeeeee] dark:bg-[#00252e] text-background" : "bg-transparent"
               }`}
             >
               {item.name}
