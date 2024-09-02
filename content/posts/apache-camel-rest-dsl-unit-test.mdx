@@ -1,0 +1,114 @@
+---
+title: Apache Camel Rest DSL Unit Test
+description: It is sometimes a bit confusing when we try to do unit test for Apache Camel Rest DSL as the exchange passing in each processor could be different, so we create the processor in a separate class.
+tags: ["java", "unit test", "mock", "mockito", "junit", "apache camel"]
+date: 2024-09-02
+published: true
+---
+
+In the case where we are using `@Autowired` in our processor, we might need to `@Autowired` the class when we are doing unit test so that we are able to detect the components.
+
+Here's the possible solution for Apache Camel Route unit test:
+
+```java
+@RunWith(CamelSpringBootRunner.class)
+@ContextConfiguration(classes = {
+	AutowiredClass.class, ...
+	//here is the list of classes that our Route class autowired
+})
+public class CamelRouteTest {
+	//autowire the class that we are testing
+	@InjectMock
+	private CamelRouteClass testObject;
+		
+	//use @MockBean to mock the component classes that we autowired from the target testing class
+	@MockBean
+	private RouteExceptionHandler routeExceptionHandler;
+		
+	@MockBean
+	private RouteProcessor routeProcessor;
+	
+	@Test
+	public void testConfigure() throws Exception {
+		//when we're performing unit test for Camel, Camel actually run an initParentAndErrorHandlerBuilder method that passed in our CamelContext, 
+		//this method will try to retrieve the ExtendedCamelContext and getErrorHandlerFactory from it
+		ExtendedCamelContext extendedCamelContext = Mockito.mock(ExtendedCamelContext.class);
+		Mockito.when(extendedCamelContext.getErrorHandlerFactory()).thenReturn(Mockito.mock(ErrorHandlerBuilder.class));
+		CamelContext context = Mockito.mock(CamelContext.class);
+		Mockito.when(context.adapt(any())).thenReturn(extendedCamelContext);
+		
+		//if we did not set this CamelContext with ExtendedCamelContext and ErrorHandlerBuilder,
+		//we will be receiving a NullPointerException error while trying to run the unit test
+		testObject.setContext(context);
+		
+		//after setting the CamelContext
+		//we can now call our testObject.configure() method
+		testObject.configure();
+		//then verify if this method was being called for 1 time.
+		verify(testObject, times(1)).configure();
+	}
+}
+```
+
+Now we move on for the Processor class unit test.
+
+```java
+//this is for JUnit 4
+//use @ExtendWith(SpringExtension.class) if using JUnit 5
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {
+	TargetProcessor.class
+})
+public class TargetProcessorUnitTest {
+	//normally we should be using @InjectMocks or @Spy while doing unit test,
+	//however when we running unit test with this setup, sometimes @InjectMock was not able to detect the @MockBean that we declared in our unit test
+	//so instead of @InjectMocks, we @Autowired the Processor that we're targetting to perform unit test
+	@Autowired
+	private TargetProcessor targetProcessor;
+		
+	// for the classes that being Autowired from the ProcessorClass, 
+	// we can use MockBean annotation on it as long as it is a Spring Component
+	@MockBean
+	private BeanUsed beanUsed;
+		
+	@Mock
+	private HttpSession mockHttpSession;
+		
+	@Mock
+	private HttpServletRequest mockHttpServletRequest;
+		
+	@Mock
+	private Message mockMessage;
+		
+	@Mock
+	private Exchange mockExchange;
+		
+	@Captor
+	private ArgumentCaptor<String> argumentCaptor;
+		
+	@Before
+	public void setup() {
+		Mockito.when(mockHttpSession.getAttribute(anyString())).thenReturn("attribute");
+		Mockito.when(httpServletRequest.getSession()).thenReturn(mockHttpSession);
+				
+		//we are retrieving all the information from exchange.getIn(),
+		//the following is to setup the unit test environment that we are expecting
+		Map<String, Object> headers = new HashMap<>();
+		headers.put("header", "header content");
+		Application body = Mockito.mock(Application.class);
+		Mockito.when(message.getHeaders()).thenReturn(headers);
+		Mockito.when(message.getBody()).thenReturn(body);
+		Mockito.when(message.getBody(any())).thenReturn(httpServletRequest);
+		
+		Mockito.when(exchange.getIn()).thenReturn(message);
+		Mockito.when(exchange.getOut()).thenReturn(message);
+	}
+		
+	@Test
+	public void testProcessor() {
+		testObject.process(exchange);
+		verify(message, times(1)).setBody(argumentCaptor.capture());
+		assertEquals("expected", argumentCaptor.getValue());
+	}
+}
+```

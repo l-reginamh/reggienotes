@@ -8,7 +8,7 @@ published: true
 
 ReflectionTestUtils is part of the following dependencies `spring-context` , `spring-test` so these should be added into pom.xml or build.gradle before we can use it.
 
-Let&apos;s create a Sample class with non-public fields and methods.
+Let's create a Sample class with non-public fields and methods.
 
 ```java
 public class Sample {
@@ -44,11 +44,11 @@ public class SampleServiceComponent {
 }
 ```
 
-Normally we can&apos;t access the private field *id* to assign a value for testing because there isn&apos;t a public setter method for it.
+Normally we can't access the private field *id* to assign a value for testing because there isn't a public setter method for it.
 
-So we&apos;ll use the *ReflectionTestUtils.setField* method to assign a value to the private field.
+So we'll use the *ReflectionTestUtils.setField* method to assign a value to the private field.
 
-When we&apos;re trying to invoke a non-public method, we could use the invokeMethod to access the method.
+When we're trying to invoke a non-public method, we could use the invokeMethod to access the method.
 
 ```java
 @Test

@@ -1,0 +1,177 @@
+---
+title: Apache Camel Rest DSL 101
+description: Apache Camel Offers Java based REST styled DSL that we could use to create REST services.
+tags: ["java", "apache camel"]
+date: 2024-09-02
+published: true
+---
+
+<Callout icon="💡">
+Import dependency: `org.apache.camel:camel-spring-boot-starter`
+</Callout>
+
+In Apache Camel, a `route` is a set of processing steps that are applied to a message as it travels from a source to a destination. A `route` typically consists of a series of processing steps that are connected in a linear sequence.
+
+A Camel `route` is where the integration flow is defined.
+
+Any Apache Camel Route if using the Java DSL, the class must extend the `RouteBuilder` class implement a `configure()` method to form the route definition.
+
+```java
+@Component
+public class HttpRouteBuilder extends RouteBuilder {
+	@Override
+	public void configure() throws Exception {
+		//...
+	}
+}
+```
+
+The root URL will be defined in using syntax like `rest ("/api/v1")`. Then you can specify what type of call can be made to the endpoint: `GET`, `PUT`, `POST`, or `DELETE`. What the endpoint `produces` and `consumes` may also be defined in addition to defining what type of object the endpoint is expecting to be produced or consumed.
+
+Using `.route` allows you to define new route(s) within your rest-definition. It can be handy if your route is short or if you just want to process/transform/validate the message in someway before sending it to your actual consumer endpoint.
+
+```java
+@Override
+public void configure() throws Exception {
+	rest("/api/v1")
+	.get("/targetUrl")
+	.consumes(MediaType.APPLICATION_JSON_VALUE)
+	.produces(MediaType.APPLICATION_JSON_VALUE)
+	.route()
+		.routeId("routeId")
+		.process(
+			new Processor() {
+				//...
+			}
+		)
+		//or we create another class for the processor and call it here (this would ease the unit test)
+		.process(new CustomProcessor())
+		.end();
+	.endRest();
+}
+```
+
+<Callout icon="⚠️">
+The method above uses Camel [Rest-DSL](https://camel.apache.org/manual/rest-dsl.html) which allows you to define rest endpoints using java instead of fiddling URI Strings. In Newer versions of Camel `route()` and `endRest()` methods have been removed from `RestDefinition` class.
+</Callout>
+
+### Choice and When
+
+When we need to conditionally route based on some fact, we can construct using `choice` and `when`. They have the similar behaviour as Java `if`/`else`.
+
+```java
+.route()
+	.routeId()
+	.choice()
+		.when(condition1).process(...)
+		.when(condition2).process(...)
+	.otherwise()
+		.process(...)
+	.end()
+```
+
+We have many different options when writing Camel `when()` condition, this is called build a predicate.
+
+Here's the samples:
+
+```java
+// when the Body of the message contains the specified string
+.when(body().contains("message"));
+
+// Using Simple language to test when the Body of the message is exactly the specified value
+.when().simple("${body} == 'sample'");
+
+// when a Header with name country equals to "MY"
+.when(header("country").isEqualTo("MY"));
+
+// Using the File component check that the name of the received file is "sample.txt"
+.when(header("FileName").isEqualTo("sample.txt"));
+
+// Using the File component, using PredicateBuilder.endsWith() to check that the name of the file received ends with .txt
+.when(header("FileName").endsWith("txt"));
+
+// Using Camel's regex method, check that the vale of the Header with the name country is either US, SG, or MY
+.when(header("country").regex("US|SG|MY"));
+
+// Using Camel's XPath support, check that the value of the statuc attribute on the customer element is = "gold"
+.when(xpath("/customer/@status = 'gold'"));
+```
+
+We can create a new route outside of `rest()`.
+
+```java
+@Override
+public void configure() throws Exception {
+	rest("/api/v1")
+	.get("/targetUrl")
+	.consumes(MediaType.APPLICATION_JSON_VALUE)
+	.produces(MediaType.APPLICATION_JSON_VALUE)
+	.route()
+		.routeId("routeId")
+		.choice()
+		.when(header("testing").isNotNull())
+		.to("direct:notNullFlow")
+		.otherwise()
+		.to("direct:nullFlow")
+		.end();
+	.endRest();
+	
+	from("direct:notNullFlow")
+		.process(new Processor() {
+				//...
+		});
+		
+	from("direct:nullFlow")
+		.process(new Processor() {
+				//...
+		});
+}
+```
+
+## Processor
+
+To create a processor, we'll need to implement Processor interface
+
+```java
+@Component
+public class CustomProcessor implements Processor {
+	
+	@Override
+	public void process(Exchange exchange) throws Exception {
+		//how to get headers values
+		Map<String, Object> headers = exchange.getIn().getHeaders();
+		
+		//how to get current session associated with this request
+		HttpServletRequest request = exchange.getIn().getBody(HttpServletRequest.class);
+		HttpSession session = request.getSession();
+				
+		//how to get the attribute
+		String attribute = session.getAttribute("attributeName");
+				
+		//...
+		
+		//once we're ready with all process we need to do
+		//we can now set the header and body for our outbound message
+		exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, HttpStatus.OK.value());
+		exchange.getOut().setBody("content to be returned");
+	}
+}
+```
+
+### References
+
+[Routes](https://camel.apache.org/manual/routes.html)
+
+[REST DSL](https://camel.apache.org/manual/rest-dsl.html)
+
+[Choice](https://camel.apache.org/components/3.14.x/eips/choice-eip.html)
+
+[In Apache Camel what does "route()" do in a restful declaration?](https://stackoverflow.com/questions/70744710/in-apache-camel-what-does-route-do-in-a-restful-declaration)
+
+[The Camel Rest DSL | Red Hat Developer](https://developers.redhat.com/blog/2017/02/02/the-camel-rest-dsl#)
+
+[Creating a REST service with Apache Camel](https://tomd.xyz/camel-rest/)
+
+[Camel's choice() and when() - with examples](https://tomd.xyz/camel-choice-when/)
+
+[REST Services With Apache Camel - DZone](https://dzone.com/articles/expose-rest-endpoints-with-apache-camel)

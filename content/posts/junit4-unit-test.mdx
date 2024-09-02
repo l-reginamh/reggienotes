@@ -6,9 +6,9 @@ date: 2024-08-31
 published: true
 ---
 
-First of all, to use JUnit 4, we&apos;ll need to add dependency of `junit`.
+First of all, to use JUnit 4, we'll need to add dependency of `junit`.
 
-Let&apos;s use gradle as example. Inside build.gradle, we&apos;ll need to setup the unit test platform to the build tool.
+Let's use gradle as example. Inside build.gradle, we'll need to setup the unit test platform to the build tool.
 
 ```java
 dependencies {
@@ -21,7 +21,7 @@ test {
 }
 ```
 
-JUnit Runner is a class extends JUnit&apos;s abstract Runner class that responsible for running JUnit tests. To run test runners, we&apos;ll need the `@RunWith` annotation.
+JUnit Runner is a class extends JUnit's abstract Runner class that responsible for running JUnit tests. To run test runners, we'll need the `@RunWith` annotation.
 
 ```java
 @RunWith(MockitoJUnitRunner.class)
