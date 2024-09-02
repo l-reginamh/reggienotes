@@ -1,0 +1,52 @@
+---
+title: Unit Test by passing SecurityManager
+description: Sometimes we do have some unit test that is testing for classes with System.exit(0) and we're having difficulty while writing unit test for it.
+tags: ["java", "junit", "unit test"]
+date: 2024-08-31
+published: true
+---
+
+Firstly, let's have the `ExitException` class extended from `SecurityException` created.
+
+```java
+private static class ExitException extends SecurityException {
+	public int status;
+	public ExitException(int status) {
+		super("System.exit");
+		this.status = status;
+	}
+}
+```
+
+Then, we'll have a `NoExitSecurityManager` class extended from `SecurityManager` created. 
+
+By using this class, we'll be able to bypass the permission issue from our system when we're trying to skip from running `System.exit(0)` .
+
+```java
+private class NoExitSecurityManager extends SecurityManager {
+	@Override
+	public void checkPermission(Permission p) {
+		// allow permission
+	}
+
+	@Override
+	public void checkExit(int status) {
+		super.checkExit(status);
+		throw new ExitException(status);
+	}
+}
+```
+
+After both the above classes were created, we can now go to our unit test class. 
+
+In our `@Before` method, add the line below to make sure when we're running the unit test, it will be using the `NoExitSecurityManager` class we've created earlier.
+
+```java
+System.setSecurityManager(new NoExitSecurityManager());
+```
+
+And in our `@After` method, add the line below to reset the `SecurityManager` to avoid error.
+
+```java
+System.setSecurityManager(null);
+```

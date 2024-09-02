@@ -1,0 +1,30 @@
+---
+title: MockedStatic
+description: Static methods are usually not able to mock using Mockito.mock, we'll need to have MockedStatic for them.
+tags: ["java", "junit", "unit test", "mock", "mockito"]
+date: 2024-09-02
+published: true
+---
+
+To use the `MockedStatic`, we will first need to using `mockito-core` version higher than 5.
+
+Let's say we have this `SampleClass` with a bunch of static method and we're required to mock those method and return some specific values.
+
+The MockedStatic is not restricted to only one Class, instead, we are able to mock multiple Classes in one try{}.
+
+```java
+try (
+    //Separate each MockedStatic classes using ";"
+	MockedStatic<SampleClass1> sampleClass1MockedStatic = mockStatic(SampleClass1.class);
+	MockedStatic<SampleClass2> sampleClass2MockedStatic = mockStatic(SampleClass2.class)
+) {
+	sampleClass1MockedStatic.when(() -> SampleClass1.sampleMethod01(any()).thenReturn("true"));
+	sampleClass2MockedStatic.when(() -> SampleClass2.sampleMethod01(anyString()).thenReturn("random string"));
+
+	//...
+}
+```
+
+<Callout icon="💥">
+The static mocked values will only be reflecting inside the `try(){}` block.
+</Callout>

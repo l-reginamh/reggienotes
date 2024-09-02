@@ -1,0 +1,259 @@
+---
+title: Spring Integration DSL 101
+description: It took us quite some time to google and read through the code.
+tags: ["java", "spring", "spring integration"]
+date: 2024-08-31
+published: true
+---
+
+
+<Callout icon="💡">
+Import dependency: `org.springframework.boot:spring-boot-starter-integration`, `org.springframework.integration:spring-integration-core`
+</Callout>
+
+Let's take a look on the follow code on how Spring Integration could be.
+
+```java
+@Configuration
+public class SpringIntegrationEndpoint {
+
+	//This bean is to create a new application
+	@Bean
+	public IntegrationFlow createApplication() {
+		return IntegrationFlow
+			//API called from frontend
+			.from(Http.inboundGateway("/api/application/create") 
+				//HTTP method - mostly GET/POST
+				.requestMapping(m -> m.methods(HttpMethod.POST)) 
+				//expected payload type to be received from frontend
+				.requestPayloadType(ApplicationPayload.class)    
+				//check if any error happened that stopped our application to continue running
+				.errorChannel("errorHandling.input"))            
+			//add logging to track in debug.log if we have enter this stage
+			.log("Start createApplication Flow")                 
+			.handle((p, h) -> {
+				//process the payload passed from frontend or do whatever coding we need here
+			})
+			.log("End createApplication Flow")
+			.get();
+	}
+		
+	//This bean is to retrieve the application by Id from Database, in Spring, we can create ApplicationRepository interface extends to JpaRepository
+	@Bean
+	public IntegrationFlow getApplicationById(@Autowired ApplicationRepository ) {
+		return IntegrationFlow
+			//we are expecting to get each application id from this API called from frontend
+			.from(Http.inboundGateway("/api/application/{id}")                   
+				//we can retrieve the path variable and set it as header for this integration flow
+				.headerExpression("id", "#pathVariables.id").                    
+				//we can also retrieve the request params and set it as header for this integration flow
+				.headerExpression("queryParams", "#requestParams").              
+				//this is to read the path variable id from the API path and set it as payload
+				.payloadExpression("#pathVariables.id")                          
+				//this API is not expecting any payload from frontend, instead the frontend is expecting to GET the informations from this API
+				.requestMapping(m -> m.methods(HttpMethod.GET))                  
+				.errorChannel("errorHandling.input"))
+			.log("Start getApplicationById Flow")
+			//we have set the id path variable to payload, so here when we wanna use it, we're just gonna call p.toString()
+			.handle((p, h) -> applicationRepository.retrieveById(p.toString()))  
+			.filter(Optional.class, p -> {
+					//we have a filter here to check if the payload we got from the previous step(database retrieve) is getting any value or not, we can also add somt other condition checking here if needed
+					if (!p.isPresent()) return false;                                
+				},
+				e -> e.discardFlow(f -> f.handle(p -> {
+					//if we are getting a false from the filter, we'll throw an exception
+					throw new ApiRuntimeException(HttpStatus.NO_CONTENT, "", "");    
+				}))
+			)
+			// after all checking done, we're getting the values retrieved from database to frontend as a whole response
+			.<Optional<Application>>handle((p, h) -> p.get()).                   
+			.log("End getApplicationById Flow")
+			.get();
+	}
+		
+	@Bean
+	public IntegrationFlow updateApplication() {
+		return IntegrationFlows
+			//we are expecting to get each application id from this API called from frontend
+			.from(Http.inboundGateway("api/application/{id}/update")               
+				//retrieve the path variable and set it as header for this integration flow
+				.headerExpression("id", "#pathVariables.id")                           
+				.requestMapping(m -> m.methods(HttpMethod.POST))
+				.requestPayloadType(Application.class)
+				.errorChannel("errorHandling.input"))
+			.log("Start updateApplication Flow")
+			//let's say our current application have 5 stage and different stage will need to trigger different flow, we can use route here
+			.<Application, ApplicationStatus>route(                                   
+				//we retrieve the status in the payload sent by FE to check the current status condition
+				p -> p.getStatus(),                                                    
+				//if we are in the first stage, we will proceed with the following subflow
+				m -> m.subFlowMapping(ApplicationStatus.Stage1,                        
+					//route to the expected flow
+					subFlow -> subFlow.routeToRecipients(recipientListRouterSpec ->    
+						recipientListRouterSpec
+						//calling flow constructed in bean named preStage2Check
+						.recipient("preStage2Check.input")                         
+						//then we could have the subflow that invoked as a recipient
+						.recipientFlow(source -> source                            
+							.log("Start Pre Stage 2 Check")
+							.<Application>handle((p, h) -> {
+								//...
+								return p;
+							})
+							//handle the flows checked from the recipientFlow and return the payload to frontend
+							.<Application.class>handle((p, h) -> {                     
+								//...
+								ApplicationStatus applicationStatus = ApplicationStatus.Stage3;
+								ApplicationResponse applicationResponse = ApplicationResponse.builder()
+									.applicationId(h.get("id"))
+									.applicationStatus(ApplicationStatus.Stage1Completed)
+									.httpCodeStatus("200")
+									.build();
+									return MessageBuilder.withPayload(applicationResponse).build();
+								})
+						)
+					)
+				)
+				//handle pre Stage 3 flows
+				.subFlowMapping(ApplicationStatus.Stage2,                              
+					//...
+				)
+				//handle other subflows                                                
+				//let's say Stage 5 is our last stage before submission, we will go for presubmission check in this stage  
+		 		.subFlowMapping(ApplicationStatus.Stage5,                              
+					subFlow -> subFlow.routeToRecipients(recipientListRouterSpec ->
+			 			recipientListRouterSpec
+							.recipient("preSubmissionCheck.input")
+							.recipientFlow(source -> source
+								.<Application>handle((p, h) -> {
+			 						//...
+									return p;
+								})
+								.<Application.class>handle((p, h) -> {
+									//...
+									ApplicationStatus applicationStatus = ApplicationStatus.Stage5;
+									ApplicationResponse applicationResponse = ApplicationResponse.builder()
+										.applicationId(h.get("id"))
+										.applicationStatus(ApplicationStatus.SubmissionReady)
+										.httpCodeStatus("200")
+										.build();
+									return MessageBuilder.withPayload(applicationResponse).build();
+								})
+							)
+						)
+				)
+			)
+			.get();
+	}
+		
+		@Bean
+		public IntegrationFlow submitApplication() {
+			return IntegrationFlows
+				//we are expecting to get each application id from this API called from frontend
+				.from(Http.inboundGateway("api/application/{id}/submit")         
+					//retrieve the path variable and set it as header for this integration flow
+					.headerExpression("id", "#pathVariables.id")                 
+					.requestMapping(m -> m.methods(HttpMethod.POST))
+					.requestPayloadType(Application.class)
+					.errorChannel("errorHandling.input"))
+				.log("Start submitApplication Flow")
+				.<Application.class>handle((p, h) -> {
+					//handle application submission here
+					ApplicationResponse applicationResponse = ApplicationResponse.builder()
+						.applicationId(h.get("id"))
+						.applicationStatus("Submission completed.")
+						.httpCodeStatus("200")
+						.build();
+					return MessageBuilder.withPayload(applicationResponse).build
+				}, a -> a.transactional())
+				.get();
+		}
+}
+```
+
+It is a good practice to organize the Beans or Classes for easier future maintenance.
+
+```java
+//this is the Stage Pre Check IntegrationFlow class that stores all the IntegrationFlow we're using for SpringIntegrationEndpoint class
+@Configuration
+public class StageIntegrationFlow {
+	@Bean
+	public IntegrationFlow preStage1Check() {
+		//we are not acting as integration flow here so instead of returning IntegrationFlow we return as a flow
+		return flow -> flow.log("Start Pre Stage 1 Check Flow")              
+			.routeToRecipients(
+				recipientListRouterSpec -> recipientListRouterSpec.recipientFlow((Application p) -> !p.getBasicDetails().isEmpty(),
+					m -> m.<Application>handle((p, h) ->
+						//...
+						return p;
+					)
+				)
+				//return back to parent flow
+				.defaultOutputToParentFlow()                         
+			)
+			.log("End Pre Stage 2 Check Flow");
+		}
+		
+		//...
+		
+		@Bean
+		public IntegrationFlow preSubmissionCheck() {
+			return flow -> flow.log("Start Pre Submission Check Flow")
+				.routeToRecipients(
+					recipientListRouterSpec -> recipientListRouterSpec.recipientFlow((Application p) -> !p.getAdditionalDetails().isEmpty(),
+						m -> m.<Application>handle((p, h) ->
+							//...
+							return p;
+						)
+						//since this is a pre submission so we need to call the email gateway to send user a copy of the application
+						.handle("emailGateway", "send")                   
+						.handle((p, h) -> 
+							return MessageBuilder.withPayload(Strings.EMPTY)
+								.copyHeadersIfAbsent(h)
+								.build();
+						)
+					)
+					.defaultOutputToParentFlow()
+				)
+				.log("End Pre Stage 2 Check Flow");
+		}
+}
+```
+
+We will need to use @ComponentScan annotation to scan for components
+
+```java
+@SpringBootApplication
+@EnableIntegration
+@ComponentScan(basePackages = {"com.location.package", ...})
+@IntegrationComponentScan({"com.location.package", ...})
+public class Application {
+	public static void main(String args) {
+		SpringApplication.run(Application.class, args);
+	}
+		
+	//This is the error handling bean
+	@Bean
+	public IntegrationFlow errorHandling() {
+		return f -> f.<MessagingException, Message<?>?transform(msg -> {
+			if (msg.getCause() instanceOf TargetException) {
+				TargetException targetException = (TargetException) msg.getCause();
+				if (targetException.getHttpStatus().equals(HttpStatus.NO_CONTENT)) {
+					return MessageBuilder
+						.withPayload("{}")
+						.setHeaderIfAbsent("http_statusCode", HttpStatus.OK)
+						.build();
+				}
+				return MessageBuilder
+					.withPayload(targetException.getErrorResponse())
+					.setHeaderIfAbsent("http_statusCode", .targetException.getHttpStatus())
+					.build();
+			}
+			return MessageBuilder
+				.withPayload("{}")
+				.setHeaderIfAbsent("http_statusCode", .targetException.getHttpStatus())
+				.build();
+			})
+		}
+}
+```

@@ -1,0 +1,62 @@
+---
+title: Spring Integration DSL Unit Test
+description: We thought that we are not able to perform unit test for Spring IntegrationFlow, but we actually can.
+tags: ["java", "unit test", "mock", "mockito", "junit", "spring integration"]
+date: 2024-08-31
+published: true
+---
+
+Import dependency `spring-integration-core` to start implementing Spring Integration DSL.
+
+Lets try to understand this with a sample.
+
+```java
+@ExtendWith(SpringExtension.class)
+@EnableIntegration
+@WebAppConfiguration
+@ComponentScan("<<packageLocatedTheTestingClass>>")
+@ContextConfiguration(classes = {Target.class, UnitTest.TargetConfiguration.class})
+public class UnitTest {
+	@Autowired
+	private WebApplicationContext webApplicationContext;
+
+	@Autowired
+	private IntegrationFlowContext integrationFlowContext;
+
+	@Before
+	public void setup() throws Exception {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext.build);
+	}
+
+	@Test
+	public void unitTest() {
+		//declare a message channel
+		QueueChannel reply = new QueueChannel();
+
+		//get the bean we created for the endpoints using webApplicationContext
+		IntegrationFlow endpoint = (IntegrationFlow) webApplicationContext.getBean("<<endpointMethodName>>");
+		IntegrationFlowContext.IntegrationFlowRegistration endpointFlow = this.integrationFlowContext.registration(endpoint).register();
+		
+		Object object = new Object();
+
+		//we construct a payload that mimic frontend request to be send to our endpoint IntegrationFlow
+		final Message<Object> message = MessageBuilder.withPayload(object).setReplyChannel(reply).build();
+
+		//we send the message to the endpoint flow
+		//and declare a response variable to receive the response from the endpoint
+		endpointFlow.getMessagingTemplate().send(message);
+		Message<?> response = reply.receive();
+
+		assertTrue(response instanceof Encryption)
+	}
+
+	//when we are performing the unit test, sometimes we do not need to go through the actual bean process while testing
+	//we can create this subclass to configure the beans to by pass those beans.
+	public static class TargetConfiguration {
+		@Bean
+		public IntegrationFlow requestLoggingFlow() {
+			return f -> f.log();
+		}
+	}
+}
+```

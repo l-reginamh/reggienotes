@@ -1,0 +1,36 @@
+---
+title: Reflection - getDeclaredField() and getDeclaredMethod()
+description: Reflection API from Java is something we are able to use to access and modify fields or methods during runtime.
+tags: ["java", "unit test", "reflection"]
+date: 2024-08-31
+published: true
+---
+
+<Callout icon="⏰">
+Checkout the following sample usage of getDeclaredField() and getDeclaredMethod() we can use in unit test.
+</Callout>
+
+```java
+// Declaring the TestObject's class
+Object testObject = new TestObject();
+
+// Get declared field from the TestObject's class
+Field field = TestObject.class.getDeclaredField("fieldName");   
+// setAccessible to TRUE so that we can access the private field.
+field.setAccessible(true);                                      
+// set our TestObject class's declared field 
+// to the specific value we wanna use for testing.
+field.set(testObject, "fieldValueToBeSet");                     
+                                                                
+
+// Declaring a list of arguments passed to the method.
+Object[] arguments = new Object[1];
+Argument a = Mockito.mock(Argument.class);
+
+// Get declared method from the TestObject's class
+Method method = TestObject.class.getDeclaredMethod("methodName", new Class[]{Argument.class});  
+// setAccessible to TRUE so that we can access the private method.
+method.setAccessible(true);                                                                     
+// invoke our method in TestObject using our specified arguments in runtime
+method.invoke(testObject, arguments);                                                           
+```

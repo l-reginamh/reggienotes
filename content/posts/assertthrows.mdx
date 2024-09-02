@@ -1,0 +1,40 @@
+---
+title: JUnit 5 - assertThrows
+description: This is a new assertion introduced in JUnit 5 for exception assertion.
+tags: ["java", "junit", "unit test"]
+date: 2024-09-02
+published: true
+---
+
+### assertThrows method
+
+JUnit 5 Jupiter assertions API introduces the assertThrows method for asserting exceptions. This assertThrows accept the expected exception as the first parameter and an Executable functional interface where we can pass the code under test through a lambda expression as the second parameter.
+
+```java
+@Test
+public void assertThrowsTest() {
+	Exception exception = assertThrows(Exception.class, () -> {
+		//...
+	})
+	assertTrue(exception.getMessage().contains("expected message"));
+}
+```
+
+If the expected exception is thrown, assertThrows returns the exception, which enables us to also assert on the message.
+
+<Callout icon="⏰">
+Take note to not call multiple method inside assertThrows because it could cause lambda complexity issue.
+</Callout>
+
+When using JUnit 4, we can simply use the expected attribute of the @Test annotation to declare that we expect an exception to be thrown anywhere in the annotated test method.
+
+```java
+@Test(expected = Exception.class)
+public void expectedExceptionTest() {
+	//...
+}
+```
+
+### References
+
+[Assert an Exception Is Thrown in JUnit 4 and 5 | Baeldung](https://www.baeldung.com/junit-assert-exception)
